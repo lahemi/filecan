@@ -89,7 +89,7 @@ func genRandTitle() (title string) {
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	files, err := ioutil.ReadDir(uploadPath)
 	if err != nil {
-        panic(err)
+		panic(err)
 	}
 	// Don't keep too many files around, just in case.
 	if len(files) > 30 {
