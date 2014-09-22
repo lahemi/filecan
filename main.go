@@ -49,14 +49,14 @@ func init() {
 	flag.StringVar(&uploadPath, "dir", "/tmp/fuploads/", "Dir for uploaded files.")
 	flag.StringVar(&uploadPath, "d", "/tmp/fuploads/", "Dir for uploaded files.")
 
+	flag.Parse()
+
 	if _, err := os.Stat(uploadPath); os.IsNotExist(err) {
 		if err := os.Mkdir(uploadPath, 0755); err != nil {
 			fmt.Fprintln(os.Stderr, "Failed to create upload dir.")
 			panic(err)
 		}
 	}
-
-	flag.Parse()
 
 	if !strings.HasSuffix(uploadPath, "/") {
 		uploadPath += "/"
@@ -86,19 +86,10 @@ func genRandTitle() (title string) {
 	return
 }
 
-func serveSingle(pattern string, filename string) {
-	http.HandleFunc(pattern, func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, filename)
-	})
-}
-
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	files, err := ioutil.ReadDir(uploadPath)
 	if err != nil {
-		if err := os.Mkdir(uploadPath, 0755); err != nil {
-			fmt.Fprintln(os.Stderr, "Failed to create upload dir.")
-			panic(err)
-		}
+        panic(err)
 	}
 	// Don't keep too many files around, just in case.
 	if len(files) > 30 {
